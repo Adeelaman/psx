@@ -304,7 +304,7 @@
     </div>
 
     <div class="calculator-section">
-        <div class="calculator-title">🧮 Minimum Sell Price Calculator</div>
+        <div class="calculator-title">🧮 Fixed PKR Profit Calculator</div>
 
         <div class="input-group">
             <div class="input-field">
@@ -320,8 +320,8 @@
                 <input type="number" id="commissionRate" step="0.001" value="0.03" placeholder="0.03">
             </div>
             <div class="input-field">
-                <label for="desiredProfit">Desired Profit (%)</label>
-                <input type="number" id="desiredProfit" step="0.1" value="5" placeholder="5">
+                <label for="desiredProfit">Desired Profit (PKR)</label>
+                <input type="number" id="desiredProfit" step="100" value="5000" placeholder="5000">
             </div>
         </div>
 
@@ -337,7 +337,7 @@
                 <span id="breakEvenPrice">Rs. 0</span>
             </div>
             <div class="result-item">
-                <span>Minimum Sell Price (with profit):</span>
+                <span>Minimum Sell Price (for Rs. target profit):</span>
                 <span id="minimumSellPrice">Rs. 0</span>
             </div>
         </div>
@@ -411,9 +411,9 @@
         const quantity = parseFloat(document.getElementById('quantity').value);
         const buyPrice = parseFloat(document.getElementById('buyPrice').value);
         const commissionRate = parseFloat(document.getElementById('commissionRate').value) / 100;
-        const desiredProfit = parseFloat(document.getElementById('desiredProfit').value) / 100;
+        const desiredProfitPKR = parseFloat(document.getElementById('desiredProfit').value);
 
-        if (!quantity || !buyPrice || !commissionRate) {
+        if (!quantity || !buyPrice || !commissionRate || !desiredProfitPKR) {
             alert('Please fill in all required fields');
             return;
         }
@@ -434,13 +434,30 @@
         // Break-even calculation
         const breakEvenSellPrice = totalBuyCost / (quantity * (1 - sellCostRate));
 
-        // Minimum sell price with profit
-        const minimumSellPrice = (totalBuyCost * (1 + desiredProfit)) / (quantity * (1 - sellCostRate));
+        // Target amount needed after selling (buy cost + desired profit)
+        const targetAmount = totalBuyCost + desiredProfitPKR;
+
+        // Minimum sell price to achieve target profit
+        const minimumSellPrice = targetAmount / (quantity * (1 - sellCostRate));
+
+        // Calculate profit percentage
+        const profitPercentage = (desiredProfitPKR / totalBuyCost) * 100;
 
         // Display results
         document.getElementById('totalBuyCost').textContent = `Rs. ${totalBuyCost.toFixed(2)}`;
         document.getElementById('breakEvenPrice').textContent = `Rs. ${breakEvenSellPrice.toFixed(2)}`;
         document.getElementById('minimumSellPrice').textContent = `Rs. ${minimumSellPrice.toFixed(2)}`;
+
+        // Add profit percentage display
+        const resultsDiv = document.getElementById('results');
+        let profitPercentageDiv = document.getElementById('profitPercentage');
+        if (!profitPercentageDiv) {
+            profitPercentageDiv = document.createElement('div');
+            profitPercentageDiv.id = 'profitPercentage';
+            profitPercentageDiv.className = 'result-item';
+            resultsDiv.appendChild(profitPercentageDiv);
+        }
+        profitPercentageDiv.innerHTML = `<span>Profit Percentage:</span><span>${profitPercentage.toFixed(2)}%</span>`;
 
         document.getElementById('results').style.display = 'block';
     }
