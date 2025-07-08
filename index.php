@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSX Trading Tax & Commission Flow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .flow-section {
+            margin-bottom: 40px;
+        }
+
+        .flow-title {
+            font-size: 1.5em;
+            color: #34495e;
+            margin-bottom: 20px;
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(45deg, #3498db, #2ecc71);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .flow-chart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .flow-step {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: 2px solid #3498db;
+            border-radius: 15px;
+            padding: 20px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .flow-step:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .step-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .step-details {
+            color: #7f8c8d;
+            line-height: 1.6;
+        }
+
+        .calculator-section {
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: 0 10px 30px rgba(255, 154, 158, 0.3);
+        }
+
+        .calculator-title {
+            font-size: 1.8em;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .input-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .input-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-field label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .input-field input {
+            padding: 12px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-field input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 20px auto;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+        }
+
+        .results {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #e74c3c;
+        }
+
+        .tax-breakdown {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 8px 25px rgba(168, 237, 234, 0.3);
+        }
+
+        .tax-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .tax-table th, .tax-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #bdc3c7;
+        }
+
+        .tax-table th {
+            background: linear-gradient(45deg, #34495e, #2c3e50);
+            color: white;
+            font-weight: bold;
+        }
+
+        .tax-table tr:hover {
+            background: rgba(52, 152, 219, 0.1);
+        }
+
+        .arrow {
+            font-size: 2em;
+            color: #3498db;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .highlight {
+            background: linear-gradient(45deg, #f1c40f, #f39c12);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(241, 196, 15, 0.3);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🏛️ Pakistan Stock Exchange Trading Flow</h1>
+
+    <div class="flow-section">
+        <div class="flow-title">📊 Tax & Commission Flow (Buy Transaction)</div>
+        <div class="flow-chart">
+            <div class="flow-step">
+                <div class="step-title">1. Base Transaction Amount</div>
+                <div class="step-details">Quantity × Rate = Gross Amount</div>
+            </div>
+            <div class="arrow">⬇️</div>
+            <div class="flow-step">
+                <div class="step-title">2. Brokerage Commission</div>
+                <div class="step-details">Commission Rate (0.03% to 0.18%) × Gross Amount</div>
+            </div>
+            <div class="arrow">⬇️</div>
+            <div class="flow-step">
+                <div class="step-title">3. Sales & Services Tax (SST)</div>
+                <div class="step-details">18% on Commission Amount</div>
+            </div>
+            <div class="arrow">⬇️</div>
+            <div class="flow-step">
+                <div class="step-title">4. Capital Duty Commission (CDC)</div>
+                <div class="step-details">0.05% on transaction value (capped at Rs. 5,000)</div>
+            </div>
+            <div class="arrow">⬇️</div>
+            <div class="flow-step">
+                <div class="step-title">5. Additional Charges</div>
+                <div class="step-details">LAGA, SECP, NCS fees (small amounts)</div>
+            </div>
+            <div class="arrow">⬇️</div>
+            <div class="flow-step">
+                <div class="step-title">6. Total Cost</div>
+                <div class="step-details">Gross Amount + All Fees & Taxes</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flow-section">
+        <div class="flow-title">📈 Tax & Commission Flow (Sell Transaction)</div>
+        <div class="flow-chart">
+            <div class="flow-step">
+                <div class="step-title">1. Base Transaction Amount</div>
+                <div class="step-details">Quantity × Rate = Gross Amount</div>
+            </div>
+            <div class="arrow">⬇️</div>
+            <div class="flow-step">
+                <div class="step-title">2. Brokerage Commission</div>
+                <div class="step-details">Commission Rate × Gross Amount</div>
+            </div>
+            <div class="arrow">⬇️</div>
+            <div class="flow-step">
+                <div class="step-title">3. Sales & Services Tax (SST)</div>
+                <div class="step-details">18% on Commission Amount</div>
+            </div>
+            <div class="arrow">⬇️</div>
+            <div class="flow-step">
+                <div class="step-title">4. Capital Duty Commission (CDC)</div>
+                <div class="step-details">0.05% on transaction value (capped at Rs. 5,000)</div>
+            </div>
+            <div class="arrow">⬇️</div>
+            <div class="flow-step">
+                <div class="step-title">5. Capital Value Tax (CVT)</div>
+                <div class="step-details">0.01% on sale value (for large transactions)</div>
+            </div>
+            <div class="arrow">⬇️</div>
+            <div class="flow-step">
+                <div class="step-title">6. Additional Charges</div>
+                <div class="step-details">LAGA, SECP, NCS fees</div>
+            </div>
+            <div class="arrow">⬇️</div>
+            <div class="flow-step">
+                <div class="step-title">7. Net Proceeds</div>
+                <div class="step-details">Gross Amount - All Fees & Taxes</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="calculator-section">
+        <div class="calculator-title">🧮 Minimum Sell Price Calculator</div>
+
+        <div class="input-group">
+            <div class="input-field">
+                <label for="quantity">Quantity</label>
+                <input type="number" id="quantity" placeholder="Enter quantity">
+            </div>
+            <div class="input-field">
+                <label for="buyPrice">Average Buy Price</label>
+                <input type="number" id="buyPrice" step="0.01" placeholder="Enter buy price">
+            </div>
+            <div class="input-field">
+                <label for="commissionRate">Commission Rate (%)</label>
+                <input type="number" id="commissionRate" step="0.001" value="0.03" placeholder="0.03">
+            </div>
+            <div class="input-field">
+                <label for="desiredProfit">Desired Profit (%)</label>
+                <input type="number" id="desiredProfit" step="0.1" value="5" placeholder="5">
+            </div>
+        </div>
+
+        <button class="calculate-btn" onclick="calculateMinimumSellPrice()">Calculate Minimum Sell Price</button>
+
+        <div class="results" id="results" style="display: none;">
+            <div class="result-item">
+                <span>Total Buy Cost:</span>
+                <span id="totalBuyCost">Rs. 0</span>
+            </div>
+            <div class="result-item">
+                <span>Break-even Sell Price:</span>
+                <span id="breakEvenPrice">Rs. 0</span>
+            </div>
+            <div class="result-item">
+                <span>Minimum Sell Price (with profit):</span>
+                <span id="minimumSellPrice">Rs. 0</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="tax-breakdown">
+        <h3 style="text-align: center; margin-bottom: 20px; color: #2c3e50;">📋 Tax & Fee Breakdown</h3>
+        <table class="tax-table">
+            <thead>
+            <tr>
+                <th>Fee Type</th>
+                <th>Rate/Amount</th>
+                <th>Applied On</th>
+                <th>When</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Brokerage Commission</td>
+                <td>0.03% - 0.18%</td>
+                <td>Transaction Value</td>
+                <td>Buy & Sell</td>
+            </tr>
+            <tr>
+                <td>Sales & Services Tax (SST)</td>
+                <td>18%</td>
+                <td>Commission Amount</td>
+                <td>Buy & Sell</td>
+            </tr>
+            <tr>
+                <td>Capital Duty Commission (CDC)</td>
+                <td>0.05% (max Rs. 5,000)</td>
+                <td>Transaction Value</td>
+                <td>Buy & Sell</td>
+            </tr>
+            <tr>
+                <td>Capital Value Tax (CVT)</td>
+                <td>0.01%</td>
+                <td>Sale Value</td>
+                <td>Sell Only</td>
+            </tr>
+            <tr>
+                <td>LAGA Fee</td>
+                <td>Small fixed amount</td>
+                <td>Per transaction</td>
+                <td>Buy & Sell</td>
+            </tr>
+            <tr>
+                <td>SECP Fee</td>
+                <td>Small fixed amount</td>
+                <td>Per transaction</td>
+                <td>Buy & Sell</td>
+            </tr>
+            <tr>
+                <td>NCS Fee</td>
+                <td>Small fixed amount</td>
+                <td>Per transaction</td>
+                <td>Buy & Sell</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="highlight">
+        💡 Key Insight: To break even, you need to sell at approximately 0.14% - 0.40% higher than your buy price, depending on commission rates and transaction size.
+    </div>
+</div>
+
+<script>
+    function calculateMinimumSellPrice() {
+        const quantity = parseFloat(document.getElementById('quantity').value);
+        const buyPrice = parseFloat(document.getElementById('buyPrice').value);
+        const commissionRate = parseFloat(document.getElementById('commissionRate').value) / 100;
+        const desiredProfit = parseFloat(document.getElementById('desiredProfit').value) / 100;
+
+        if (!quantity || !buyPrice || !commissionRate) {
+            alert('Please fill in all required fields');
+            return;
+        }
+
+        const grossBuyAmount = quantity * buyPrice;
+
+        // Calculate buy costs
+        const buyCommission = grossBuyAmount * commissionRate;
+        const buySST = buyCommission * 0.15;
+        const buyCDC = Math.min(grossBuyAmount * 0.0005, 5000);
+        const buyOtherFees = grossBuyAmount * 0.0003; // Approximate LAGA, SECP, NCS
+
+        const totalBuyCost = grossBuyAmount + buyCommission + buySST + buyCDC + buyOtherFees;
+
+        // Calculate sell costs (as percentage of sell amount)
+        const sellCostRate = commissionRate + (commissionRate * 0.18) + 0.0005 + 0.0001 + 0.0003;
+
+        // Break-even calculation
+        const breakEvenSellPrice = totalBuyCost / (quantity * (1 - sellCostRate));
+
+        // Minimum sell price with profit
+        const minimumSellPrice = (totalBuyCost * (1 + desiredProfit)) / (quantity * (1 - sellCostRate));
+
+        // Display results
+        document.getElementById('totalBuyCost').textContent = `Rs. ${totalBuyCost.toFixed(2)}`;
+        document.getElementById('breakEvenPrice').textContent = `Rs. ${breakEvenSellPrice.toFixed(2)}`;
+        document.getElementById('minimumSellPrice').textContent = `Rs. ${minimumSellPrice.toFixed(2)}`;
+
+        document.getElementById('results').style.display = 'block';
+    }
+</script>
+</body>
+</html>
