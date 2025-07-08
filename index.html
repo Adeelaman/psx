@@ -226,6 +226,47 @@
 </head>
 <body>
 <div class="container">
+
+    <div class="calculator-section">
+        <div class="calculator-title">🧮 Fixed PKR Profit Calculator</div>
+
+        <div class="input-group">
+            <div class="input-field">
+                <label for="quantity">Quantity</label>
+                <input type="number" id="quantity" placeholder="Enter quantity">
+            </div>
+            <div class="input-field">
+                <label for="buyPrice">Average Buy Price</label>
+                <input type="number" id="buyPrice" step="0.01" placeholder="Enter buy price">
+            </div>
+            <div class="input-field">
+                <label for="commissionRate">Commission Rate (%)</label>
+                <input type="number" id="commissionRate" step="0.001" value="0.03" placeholder="0.03">
+            </div>
+            <div class="input-field">
+                <label for="desiredProfit">Desired Profit (PKR)</label>
+                <input type="number" id="desiredProfit" step="100" value="5000" placeholder="5000">
+            </div>
+        </div>
+
+        <button class="calculate-btn" onclick="calculateMinimumSellPrice()">Calculate Minimum Sell Price</button>
+
+        <div class="results" id="results" style="display: none;">
+            <div class="result-item">
+                <span>Total Buy Cost:</span>
+                <span id="totalBuyCost">Rs. 0</span>
+            </div>
+            <div class="result-item">
+                <span>Break-even Sell Price:</span>
+                <span id="breakEvenPrice">Rs. 0</span>
+            </div>
+            <div class="result-item">
+                <span>Minimum Sell Price (for Rs. target profit):</span>
+                <span id="minimumSellPrice">Rs. 0</span>
+            </div>
+        </div>
+    </div>
+    
     <h1>🏛️ Pakistan Stock Exchange Trading Flow</h1>
 
     <div class="flow-section">
@@ -299,46 +340,6 @@
             <div class="flow-step">
                 <div class="step-title">7. Net Proceeds</div>
                 <div class="step-details">Gross Amount - All Fees & Taxes</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="calculator-section">
-        <div class="calculator-title">🧮 Fixed PKR Profit Calculator</div>
-
-        <div class="input-group">
-            <div class="input-field">
-                <label for="quantity">Quantity</label>
-                <input type="number" id="quantity" placeholder="Enter quantity">
-            </div>
-            <div class="input-field">
-                <label for="buyPrice">Average Buy Price</label>
-                <input type="number" id="buyPrice" step="0.01" placeholder="Enter buy price">
-            </div>
-            <div class="input-field">
-                <label for="commissionRate">Commission Rate (%)</label>
-                <input type="number" id="commissionRate" step="0.001" value="0.03" placeholder="0.03">
-            </div>
-            <div class="input-field">
-                <label for="desiredProfit">Desired Profit (PKR)</label>
-                <input type="number" id="desiredProfit" step="100" value="5000" placeholder="5000">
-            </div>
-        </div>
-
-        <button class="calculate-btn" onclick="calculateMinimumSellPrice()">Calculate Minimum Sell Price</button>
-
-        <div class="results" id="results" style="display: none;">
-            <div class="result-item">
-                <span>Total Buy Cost:</span>
-                <span id="totalBuyCost">Rs. 0</span>
-            </div>
-            <div class="result-item">
-                <span>Break-even Sell Price:</span>
-                <span id="breakEvenPrice">Rs. 0</span>
-            </div>
-            <div class="result-item">
-                <span>Minimum Sell Price (for Rs. target profit):</span>
-                <span id="minimumSellPrice">Rs. 0</span>
             </div>
         </div>
     </div>
