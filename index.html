@@ -232,6 +232,10 @@
 
         <div class="input-group">
             <div class="input-field">
+                <label for="investmentAmount">Amount (PKR)</label>
+                <input type="number" id="investmentAmount" placeholder="Enter Amount">
+            </div>
+            <div class="input-field">
                 <label for="quantity">Quantity</label>
                 <input type="number" id="quantity" placeholder="Enter quantity">
             </div>
@@ -248,6 +252,8 @@
                 <input type="number" id="desiredProfit" step="100" value="5000" placeholder="5000">
             </div>
         </div>
+
+        <span><small>*Either Amount or Quantity is required.</small></span>
 
         <button class="calculate-btn" onclick="calculateMinimumSellPrice()">Calculate Minimum Sell Price</button>
 
@@ -409,14 +415,19 @@
 
 <script>
     function calculateMinimumSellPrice() {
-        const quantity = parseFloat(document.getElementById('quantity').value);
+        let quantity = parseFloat(document.getElementById('quantity').value);
+        const investmentAmount = parseFloat(document.getElementById('investmentAmount').value);
         const buyPrice = parseFloat(document.getElementById('buyPrice').value);
         const commissionRate = parseFloat(document.getElementById('commissionRate').value) / 100;
         const desiredProfitPKR = parseFloat(document.getElementById('desiredProfit').value);
 
-        if (!quantity || !buyPrice || !commissionRate || !desiredProfitPKR) {
+        if ((!quantity && !investmentAmount) || !buyPrice || !commissionRate || !desiredProfitPKR) {
             alert('Please fill in all required fields');
             return;
+        }
+
+        if(!quantity) {
+            quantity = investmentAmount / buyPrice;
         }
 
         const grossBuyAmount = quantity * buyPrice;
